@@ -40,7 +40,7 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: 'https://caden-shokat.github.io/scrapify-website/',
+          redirectTo: window.location.origin + '/',
         }
       })
 
@@ -81,7 +81,7 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
           <CardTitle className="flex items-center gap-4 text-3xl">
             Welcome to Scrapify
           </CardTitle>
-          <CardDescription>hear.com Internal Access Only</CardDescription>
+          <CardDescription>Enterprise Ad Intelligence & Strategic Analytics</CardDescription>
         </CardHeader>
         <CardContent>
               <div className="flex flex-col gap-4">
@@ -106,10 +106,10 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
         </CardContent>
         <CardFooter className="flex flex-col justify-center items-center">
           <div className="mb-1">
-            This is an internal company tool.
+            Authorized hear.com + audibene.de team members only.
           </div>
           <div  className="text-sm text-gray-500 mb-2">
-            You must use your hear.com Google account to access.
+            Sign in with your company Google account.
           </div>
         </CardFooter>
       </Card>
