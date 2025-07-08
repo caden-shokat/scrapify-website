@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { supabase } from "@/integrations/supabase/client"
 import { FileDown, Mail, Plus, X } from "lucide-react"
 import LoadingSpinner from "@/components/LoadingSpinner"
+import { FormatNumber } from "@/utils/FormatNumber"
 
 interface AIHeadlineTest {
   id: string
@@ -203,7 +204,7 @@ export default function PerformanceReports() {
                     <TableCell>#{i+1}</TableCell>
                     <TableCell>{a.Brand || '—'}</TableCell>
                     <TableCell>{a.Headline}</TableCell>
-                    <TableCell>{a.Strength}</TableCell>
+                    <TableCell>{FormatNumber(a.Strength)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

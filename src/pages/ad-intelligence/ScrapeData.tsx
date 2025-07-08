@@ -10,6 +10,7 @@ import LoadingSpinner from "@/components/LoadingSpinner"
 import SelectButton from "@/components/SelectButton"
 import { ArrowUpRight } from "lucide-react"
 import { useSelectedHeadlines } from "@/hooks/useSelectedHeadlines"
+import { FormatNumber } from "@/utils/FormatNumber"
 
 interface ScrapeDataItem {
   Id: string
@@ -43,7 +44,6 @@ const ScrapeData = () => {
     try {
       setLoading(true)
       
-      // Get total count for all data
       const { count, error: countError } = await supabase
         .from('Scrape Data')
         .select('*', { count: 'exact', head: true })
@@ -51,11 +51,11 @@ const ScrapeData = () => {
       if (countError) throw countError
       setTotalCount(count || 0)
 
-      // Get paginated data
       const { data, error } = await supabase
         .from('Scrape Data')
         .select('*')
         .order('Date', { ascending: false })
+        .order('Position', {ascending: false})
         .range((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage - 1)
 
       if (error) throw error
@@ -94,7 +94,7 @@ const ScrapeData = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-primary">{totalCount}</div>
+            <div className="text-2xl font-bold text-primary">{FormatNumber(totalCount)}</div>
             <div className="text-sm text-gray-600">Total Ads</div>
           </CardContent>
         </Card>
