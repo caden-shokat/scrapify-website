@@ -3,7 +3,7 @@ import { Info } from 'lucide-react'
 
 export default function LogoutButton() {
   const handleClick = () => {
-    window.open('https://github.com/caden-shokat/Scrapify-US', '_blank')
+    window.open('https://audibene-my.sharepoint.com/:w:/g/personal/alisha_chaudhuri_hear_com/EUXJj-4SSSZApUuZxNvwtX8BopDzRJFjR4G5ZX_51BoEaA?e=qaiP7n', '_blank')
   }
   
   return (
