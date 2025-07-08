@@ -1,0 +1,8 @@
+project_id = "whptnrurxdgnzqoxejai"
+
+[functions]
+  [functions.generate-ai-headlines]
+  entrypoint = "supabase/functions/generate-ai-headlines/index.ts"
+
+  [functions.generate-top-headlines]
+  entrypoint = "supabase/functions/generate-top-headlines/index.ts"
