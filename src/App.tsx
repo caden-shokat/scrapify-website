@@ -38,7 +38,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename="/scrapify-website/">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
 
