@@ -40,7 +40,7 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin + '/',
+          redirectTo: 'https://caden-shokat.github.io/scrapify-website/',
         }
       })
 
@@ -81,7 +81,7 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
           <CardTitle className="flex items-center gap-4 text-3xl">
             Welcome to Scrapify
           </CardTitle>
-          <CardDescription>Enterprise Ad Intelligence & Strategic Analytics</CardDescription>
+          <CardDescription>Ad Intelligence & Analytics Dashboard</CardDescription>
         </CardHeader>
         <CardContent>
               <div className="flex flex-col gap-4">

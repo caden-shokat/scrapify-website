@@ -11,6 +11,7 @@ import SelectButton from "@/components/SelectButton"
 import LoadingSpinner from "@/components/LoadingSpinner"
 import { useSelectedHeadlines } from "@/hooks/useSelectedHeadlines"
 import { useToast } from "@/hooks/use-toast"  
+import { FormatNumber } from "@/utils/FormatNumber"
 
 interface AnstrexDataItem {
   Id: string
@@ -143,7 +144,7 @@ const AnstrexData = () => {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-primary-light">
-              {Math.round(anstrexData.reduce((acc, item) => acc + (item.Gravity || 0), 0) / anstrexData.length) || 0}
+              {FormatNumber(Math.round(anstrexData.reduce((acc, item) => acc + (item.Gravity || 0), 0) / anstrexData.length)) || 0}
             </div>
             <div className="text-sm text-gray-600">Avg Gravity</div>
           </CardContent>
@@ -151,7 +152,7 @@ const AnstrexData = () => {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-primary-dark">
-              {Math.round(anstrexData.reduce((acc, item) => acc + (item.Strength || 0), 0) / anstrexData.length) || 0}
+              {FormatNumber(Math.round(anstrexData.reduce((acc, item) => acc + (item.Strength || 0), 0) / anstrexData.length)) || 0}
             </div>
             <div className="text-sm text-gray-600">Avg Strength</div>
           </CardContent>
@@ -197,12 +198,12 @@ const AnstrexData = () => {
                   </TableCell>
                   <TableCell>
                     <Badge className={getGravityColor(item.Gravity)}>
-                      {item.Gravity || 'N/A'}
+                      {FormatNumber(item.Gravity) || 'N/A'}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <Badge className={getStrengthColor(item.Strength)}>
-                      {item.Strength || 'N/A'}
+                      {FormatNumber(item.Strength) || 'N/A'}
                     </Badge>
                   </TableCell>
                   <TableCell>{item.Network || 'Unknown'}</TableCell>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { supabase } from "@/integrations/supabase/client"
-import { Activity, Database, FileText, Image, TrendingUp, Users, Clock } from "lucide-react"
+import { Activity, Database, FileText, Image, TrendingUp, TableProperties, Clock } from "lucide-react"
 import LoadingSpinner from "@/components/LoadingSpinner"
 
 interface DashboardStats {
@@ -85,7 +85,7 @@ const Dashboard = () => {
         .from('Scrape Data')
         .select('Headline, Brand, Date, Platform')
         .order('Date', { ascending: false })
-        .limit(10)
+        .limit(20)
 
       setStats({
         totalScrapeData: scrapeData.count || 0,
@@ -171,7 +171,7 @@ const Dashboard = () => {
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalScrapeData.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              {stats.todaysScrapes} scraped today
+              {stats.todaysScrapes} ads scraped today
             </p>
           </CardContent>
         </Card>
@@ -179,12 +179,12 @@ const Dashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Anstrex Data</CardTitle>
-            <Activity className="text-[#127846] h-4 w-4" />
+            <TableProperties className="text-[#127846] h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalAnstrexData.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              High-performing ads
+              75 ads scraped this week
             </p>
           </CardContent>
         </Card>
@@ -197,7 +197,7 @@ const Dashboard = () => {
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalTopHeadlines}</div>
             <p className="text-xs text-muted-foreground">
-              Avg frequency: {stats.avgFrequency}
+              Top weekly headlines
             </p>
           </CardContent>
         </Card>
@@ -210,7 +210,7 @@ const Dashboard = () => {
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalFavorites}</div>
             <p className="text-xs text-muted-foreground">
-              Saved items
+              Favorited headlines
             </p>
           </CardContent>
         </Card>
@@ -218,12 +218,12 @@ const Dashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Today's Activity</CardTitle>
-            <Users className="text-[#127846] h-4 w-4" />
+            <Activity className="text-[#127846] h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.todaysScrapes}</div>
             <p className="text-xs text-muted-foreground">
-              New ads today
+              Scraped ads today
             </p>
           </CardContent>
         </Card>
