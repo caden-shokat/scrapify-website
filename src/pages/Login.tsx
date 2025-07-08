@@ -71,7 +71,7 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
       <div className="w-full max-w-xl p-12">
         <div className="flex items-center justify-center mb-6">
           <img
-              src="../Scrapify_logo.png"
+              src={`${import.meta.env.BASE_URL}Scrapify_logo.png`}
               alt="Logo"
               className="h-16 w-16 rounded-full border border-gray-200"
             />
