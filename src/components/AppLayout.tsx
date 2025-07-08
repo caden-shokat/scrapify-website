@@ -15,7 +15,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="h-6 w-px bg-gray-200" />
             <div className="flex items-center gap-3">
               <img
-                src="../Scrapify_logo.png"
+                src={`${import.meta.env.BASE_URL}Scrapify_logo.png`}
                 alt="Logo"
                 className="h-11 w-11 rounded-full border border-gray-200"
               />
