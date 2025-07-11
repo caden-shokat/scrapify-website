@@ -3,14 +3,14 @@ with exploded as (
       unnest(
         regexp_split_to_array(
           lower(
-            regexp_replace("Headline", '[^\w\s]', '', 'g')
+            regexp_replace("headline", '[^\w\s]', '', 'g')
           ),
         '\s+')
       ) as word
     from "Scrape Data"
-    where "Date" >= start_ts
-      and "Date"  < end_ts
-      and "Headline" is not null
+    where "date" >= start_ts
+      and "date"  < end_ts
+      and "headline" is not null
   )
   select
     word,

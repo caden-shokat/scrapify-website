@@ -1,7 +1,7 @@
 
 select cron.schedule(
 'topWeeklyCTR',
-'0 22 * * 5',
+'0 21 * * 5',
 $$
 WITH max_loaded AS (
   SELECT COALESCE(MAX("year" * 100 + "week"), 0) AS max_yrwk
@@ -11,36 +11,36 @@ WITH max_loaded AS (
 -- 2) raw frequency calculation
 week_counts AS (
   SELECT
-    "Id",
-    "Position",
-    "Headline",
-    date_part('year', "Date")::INT   AS "Year",
-    date_part('week', "Date")::INT   AS "Week",
-    "Brand",
-    "Platform",
+    "id",
+    "position",
+    "headline",
+    date_part('year', "date")::INT   AS "year",
+    date_part('week', "date")::INT   AS "week",
+    "brand",
+    "platform",
     COUNT(*) OVER (
       PARTITION BY
-        date_part('year', "Date"),
-        date_part('week', "Date"),
-        "Headline"
+        date_part('year', "date"),
+        date_part('week', "date"),
+        "headline"
     ) AS frequency
   FROM "Scrape Data"
-  WHERE "Position" BETWEEN 1 AND 5
-    AND char_length("Headline") BETWEEN 30 AND 80
-    AND "Headline" NOT LIKE '%$%'
-    AND "Headline" NOT LIKE '%/%'
-    AND "Headline" NOT LIKE '%\%%' ESCAPE '\'
-    AND lower("Headline") NOT LIKE '%cost%'
-    AND lower("Headline") NOT LIKE '%price%'
+  WHERE "position" BETWEEN 1 AND 5
+    AND char_length("headline") BETWEEN 30 AND 80
+    AND "headline" NOT LIKE '%$%'
+    AND "headline" NOT LIKE '%/%'
+    AND "headline" NOT LIKE '%\%%' ESCAPE '\'
+    AND lower("headline") NOT LIKE '%cost%'
+    AND lower("headline") NOT LIKE '%price%'
 ),
 
 -- 3) pick just the top row per (Year,Week,Headline)
 top_per_headline AS (
-  SELECT DISTINCT ON ("Year", "Week", "Headline")
-    "Id","Position","Headline","Year","Week","Brand","Platform"
+  SELECT DISTINCT ON ("year", "week", "headline")
+    "id","position","headline","year","week","brand","platform"
   FROM week_counts
   ORDER BY
-    "Year","Week","Headline",
+    "year","week","headline",
     frequency DESC
 )
 
@@ -49,11 +49,11 @@ INSERT INTO public."topWeeklyCTR" (
   "id","position","headline","year","week","brand","platform"
 )
 SELECT
-  t."Id", t."Position", t."Headline",
-  t."Year", t."Week", t."Brand", t."Platform"
+  t."id", t."position", t."headline",
+  t."year", t."week", t."brand", t."platform"
 FROM top_per_headline t
 CROSS JOIN max_loaded m
-WHERE (t."Year" * 100 + t."Week") > m.max_yrwk
+WHERE (t."year" * 100 + t."week") > m.max_yrwk
 ON CONFLICT ON CONSTRAINT uq_topWeeklyCTR_week_year_headline
 DO NOTHING;
 $$

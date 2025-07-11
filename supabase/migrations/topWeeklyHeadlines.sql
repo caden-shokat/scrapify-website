@@ -10,7 +10,7 @@ create table if not exists public."topWeeklyHeadlines" (
 
 select cron.schedule(
   'topWeeklyHeadlines',
-  '0 22 * * 5',
+  '0 21 * * 5',
   $$
   with
     last as (
@@ -21,20 +21,20 @@ select cron.schedule(
     ),
     weekly_counts as (
       select
-        min("Id")::text                  as source_id,
-        extract(week  from "Date")::int  as week,
-        extract(year  from "Date")::int  as year,
-        "Headline"                       as headline,
+        min("id")::text                  as source_id,
+        extract(week  from "date")::int  as week,
+        extract(year  from "date")::int  as year,
+        "headline"                       as headline,
         count(*)                         as frequency
       from
         public."Scrape Data"
       where
-        "Headline" is not null
-        and char_length("Headline") > 25        -- only headlines > 25 chars
+        "headline" is not null
+        and char_length("headline") > 25        -- only headlines > 25 chars
       group by
         year,
         week,
-        "Headline"
+        "headline"
     ),
     ranked as (
       select

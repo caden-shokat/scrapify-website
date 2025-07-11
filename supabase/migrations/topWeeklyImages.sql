@@ -12,7 +12,7 @@ create table if not exists public."topWeeklyImages" (
 -- 3. Schedule the weekly job (runs every Sunday at 00:00)
 select cron.schedule(
   'topWeeklyImages',
-  '0 22 * * 5',
+  '0 21 * * 5',
   $$
     with
       last as (
@@ -23,19 +23,19 @@ select cron.schedule(
       ),
       weekly_counts as (
         select
-          min("Id")::text                   as source_id,
-          extract(week  from "Date")::int   as week,
-          extract(year  from "Date")::int   as year,
-          "Image Url"                       as image_url,
+          min("id")::text                   as source_id,
+          extract(week  from "date")::int   as week,
+          extract(year  from "datee")::int   as year,
+          "image_url"                       as image_url,
           count(*)                          as frequency
         from
           public."Scrape Data"
         where
-          "Image Url" is not null
+          "image_url" is not null
         group by
           year,
           week,
-          "Image Url"
+          "image_url"
       ),
       ranked as (
         select

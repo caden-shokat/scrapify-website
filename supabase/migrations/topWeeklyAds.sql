@@ -9,21 +9,21 @@ WITH
     -- Count occurrences of each unique (Headline, Brand, ImageURL) per week
     weekly_counts AS (
       SELECT
-        MIN("Id")::text            AS source_id,
-        EXTRACT(WEEK FROM "Date")::INT   AS week,
-        EXTRACT(YEAR FROM "Date")::INT   AS year,
-        "Headline"                 AS headline,
-        "Brand"                    AS brand,
-        "Image Url"                 AS image_url,
+        MIN("id")::text            AS source_id,
+        EXTRACT(WEEK FROM "date")::INT   AS week,
+        EXTRACT(YEAR FROM "date")::INT   AS year,
+        "headline"                 AS headline,
+        "brand"                    AS brand,
+        "image_url"                 AS image_url,
         COUNT(*)                   AS frequency
       FROM public."Scrape Data"
       WHERE
-        "Headline" IS NOT NULL
-        AND CHAR_LENGTH("Headline") > 25    -- only longer headlines
-        AND "Brand"    IS NOT NULL
-        AND "Image Url" IS NOT NULL
+        "headline" IS NOT NULL
+        AND CHAR_LENGTH("headline") > 25    -- only longer headlines
+        AND "brand"    IS NOT NULL
+        AND "image_url" IS NOT NULL
       GROUP BY
-        year, week, "Headline", "Brand", "Image Url"
+        year, week, "headline", "brand", "image_url"
     ),
 
     -- Rank them by frequency within each week
