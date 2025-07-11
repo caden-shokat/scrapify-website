@@ -9,11 +9,11 @@ import { supabase } from "@/integrations/supabase/client"
 import { TrendingUp, Target, Sparkles } from "lucide-react"
 
 interface CTRData {
-  Headline: string | null
-  Brand: string | null
-  Platform: string | null
-  Position: number | null
-  Week: number | null
+  headline: string | null
+  brand: string | null
+  platform: string | null
+  position: number | null
+  week: number | null
   ctrScore?: number
   prediction?: string
 }
@@ -30,7 +30,7 @@ const CTRPrediction = () => {
       const { data, error } = await supabase
         .from('High Potential CTR')
         .select('*')
-        .order('Week', { ascending: false })
+        .order('week', { ascending: false })
         .limit(20)
 
       if (error) throw error
@@ -45,11 +45,10 @@ const CTRPrediction = () => {
   const generateCTRPredictions = async () => {
     setAnalyzing(true)
     
-    // Simulate AI CTR prediction
     setTimeout(() => {
       setCtrData(prev => prev.map(item => ({
         ...item,
-        ctrScore: Math.floor(Math.random() * 40) + 60, // Random score between 60-100
+        ctrScore: Math.floor(Math.random() * 40) + 60, 
         prediction: Math.random() > 0.5 ? 'High Potential' : 'Moderate Potential'
       })))
       setAnalyzing(false)
@@ -142,26 +141,26 @@ const CTRPrediction = () => {
                 <TableRow key={index}>
                   <TableCell className="max-w-md">
                     <div className="font-medium">
-                      "{item.Headline || 'No headline'}"
+                      "{item.headline || 'No headline'}"
                     </div>
                     <div className="text-sm text-gray-500 mt-1">
-                      {item.Headline?.length || 0} characters
+                      {item.headline?.length || 0} characters
                     </div>
                   </TableCell>
-                  <TableCell>{item.Brand || 'Unknown'}</TableCell>
+                  <TableCell>{item.brand || 'Unknown'}</TableCell>
                   <TableCell>
-                    <Badge className={getPlatformColor(item.Platform)}>
-                      {item.Platform || 'Unknown'}
+                    <Badge className={getPlatformColor(item.platform)}>
+                      {item.platform || 'Unknown'}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline">
-                      #{item.Position || 'N/A'}
+                      #{item.position || 'N/A'}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline">
-                      Week {item.Week || 'N/A'}
+                      Week {item.week || 'N/A'}
                     </Badge>
                   </TableCell>
                   <TableCell>

@@ -95,9 +95,9 @@ const TrendAnalysis = () => {
 
       const { data: fullCurrent, error: fullErr } = await supabase
         .from('Scrape Data')
-        .select('Headline')
-        .gte('Date', currentStart.toISOString())
-        .not('Headline', 'is', null)
+        .select('headline')
+        .gte('date', currentStart.toISOString())
+        .not('headline', 'is', null)
       if (fullErr) throw fullErr
 
       const structures = analyzeHeadlineStructures(fullCurrent || [])
@@ -116,8 +116,8 @@ const TrendAnalysis = () => {
   const analyzeHeadlineStructures = (data: any[]) => {
     const structures: Record<string, { count: number; lengths: number[]; examples: string[] }> = {}
     data.forEach(item => {
-      if (!item.Headline) return
-      const headline = item.Headline as string
+      if (!item.headline) return
+      const headline = item.headline as string
       const pattern = analyzePattern(headline)
       if (!structures[pattern]) {
         structures[pattern] = { count: 0, lengths: [], examples: [] }
@@ -156,7 +156,7 @@ const TrendAnalysis = () => {
       '51-60': 0, '61-70': 0, '71-80': 0, '80+': 0
     }
     data.forEach(item => {
-      const len = (item.Headline as string).length
+      const len = (item.headline as string).length
       if (len <= 30) buckets['20-30']++
       else if (len <= 40) buckets['31-40']++
       else if (len <= 50) buckets['41-50']++

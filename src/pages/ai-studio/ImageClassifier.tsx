@@ -8,11 +8,11 @@ import { Eye, Image as ImageIcon, Sparkles } from "lucide-react"
 import LoadingSpinner from "@/components/LoadingSpinner"
 
 interface ImageData {
-  Id: string
-  "Image Url": string | null
-  Headline: string | null
-  Brand: string | null
-  Platform: string | null
+  id: string
+  image_url: string | null
+  headline: string | null
+  brand: string | null
+  platform: string | null
   aiDescription?: string
 }
 
@@ -29,9 +29,9 @@ const ImageClassifier = () => {
       setLoading(true)
       const { data, error } = await supabase
         .from('Scrape Data')
-        .select('Id, "Image Url", Headline, Brand, Platform')
-        .not('Image Url', 'is', null)
-        .order('Date', { ascending: false })
+        .select('id, image_url, headline, brand, platform')
+        .not('image_url', 'is', null)
+        .order('date', { ascending: false })
         .limit(20)
 
       if (error) throw error
@@ -52,7 +52,7 @@ const ImageClassifier = () => {
     
     setTimeout(() => {
       setImages(prev => prev.map(img => 
-        img.Id === imageId 
+        img.id === imageId 
           ? {
               ...img,
               aiDescription: "Professional business setting with modern technology elements. Features clean design with blue and white color scheme. Likely targeting corporate professionals and small business owners. High-quality stock photography with excellent composition and lighting."
@@ -104,11 +104,11 @@ const ImageClassifier = () => {
       {/* Images Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {images.map((image) => (
-          <Card key={image.Id} className="overflow-hidden hover:shadow-lg transition-shadow">
+          <Card key={image.id} className="overflow-hidden hover:shadow-lg transition-shadow">
             <div className="aspect-video bg-gray-100 relative">
-              {image["Image Url"] ? (
+              {image.image_url ? (
                 <img 
-                  src={image["Image Url"]} 
+                  src={image.image_url} 
                   alt="Ad image"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -122,8 +122,8 @@ const ImageClassifier = () => {
               )}
               
               <div className="absolute top-2 right-2">
-                <Badge className={getPlatformColor(image.Platform)}>
-                  {image.Platform || 'Unknown'}
+                <Badge className={getPlatformColor(image.platform)}>
+                  {image.platform || 'Unknown'}
                 </Badge>
               </div>
             </div>
@@ -131,10 +131,10 @@ const ImageClassifier = () => {
             <CardContent className="p-4">
               <div className="space-y-3">
                 <div>
-                  <h3 className="font-medium text-gray-900 truncate" title={image.Headline}>
-                    {image.Headline || 'No headline'}
+                  <h3 className="font-medium text-gray-900 truncate" title={image.headline}>
+                    {image.headline || 'No headline'}
                   </h3>
-                  <p className="text-sm text-gray-500">{image.Brand || 'Unknown Brand'}</p>
+                  <p className="text-sm text-gray-500">{image.brand || 'Unknown Brand'}</p>
                 </div>
                 
                 {image.aiDescription && (
@@ -151,12 +151,12 @@ const ImageClassifier = () => {
                 
                 <div className="pt-2">
                   <Button 
-                    onClick={() => analyzeImage(image.Id)}
-                    disabled={analyzing.includes(image.Id) || !!image.aiDescription}
+                    onClick={() => analyzeImage(image.id)}
+                    disabled={analyzing.includes(image.id) || !!image.aiDescription}
                     size="sm"
                     className="w-full bg-primary hover:bg-primary-light"
                   >
-                    {analyzing.includes(image.Id) ? (
+                    {analyzing.includes(image.id) ? (
                       <>
                         <Sparkles className="w-3 h-3 mr-2 animate-spin" />
                         Analyzing...

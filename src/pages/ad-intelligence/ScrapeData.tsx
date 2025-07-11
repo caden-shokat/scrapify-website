@@ -13,14 +13,14 @@ import { useSelectedHeadlines } from "@/hooks/useSelectedHeadlines"
 import { FormatNumber } from "@/utils/FormatNumber"
 
 interface ScrapeDataItem {
-  Id: string
-  Date: string | null
-  Position: number | null
-  Headline: string | null
-  "Ad Url": string | null
-  "Image Url": string | null
-  Brand: string | null
-  Platform: string | null
+  id: string
+  date: string | null
+  position: number | null
+  headline: string | null
+  ad_url: string | null
+  image_url: string | null
+  brand: string | null
+  platform: string | null
 }
 
 const ScrapeData = () => {
@@ -54,8 +54,8 @@ const ScrapeData = () => {
       const { data, error } = await supabase
         .from('Scrape Data')
         .select('*')
-        .order('Date', { ascending: false })
-        .order('Position', {ascending: false})
+        .order('date', { ascending: false })
+        .order('position', {ascending: false})
         .range((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage - 1)
 
       if (error) throw error
@@ -109,7 +109,7 @@ const ScrapeData = () => {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-primary-dark">
-              {new Set(scrapeData.map(item => item.Brand).filter(Boolean)).size}
+              {new Set(scrapeData.map(item => item.brand).filter(Boolean)).size}
             </div>
             <div className="text-sm text-gray-600">Brands</div>
           </CardContent>
@@ -144,33 +144,33 @@ const ScrapeData = () => {
             </TableHeader>
             <TableBody>
               {scrapeData.map((item) => (
-                <TableRow key={item.Id} className="cursor-pointer hover:bg-gray-50">
-                  <TableCell className="font-mono text-sm">{item.Id}</TableCell>
-                  <TableCell>{item.Date ? new Date(item.Date).toLocaleDateString() : 'N/A'}</TableCell>
+                <TableRow key={item.id} className="cursor-pointer hover:bg-gray-50">
+                  <TableCell className="font-mono text-sm">{item.id}</TableCell>
+                  <TableCell>{item.date ? new Date(item.date).toLocaleDateString() : 'N/A'}</TableCell>
                   <TableCell>
-                    <Badge className={getPlatformColor(item.Platform)}>
-                      {item.Platform || 'Unknown'}
+                    <Badge className={getPlatformColor(item.platform)}>
+                      {item.platform || 'Unknown'}
                     </Badge>
                   </TableCell>
-                  <TableCell>{item.Position || 'N/A'}</TableCell>
-                  <TableCell className="max-w-md whitespace-normal break-words" title={item.Headline}>
-                    {item.Headline || 'No headline'}
+                  <TableCell>{item.position || 'N/A'}</TableCell>
+                  <TableCell className="max-w-md whitespace-normal break-words" title={item.headline}>
+                    {item.headline || 'No headline'}
                   </TableCell>
-                  <TableCell>{item.Brand || 'Unknown'}</TableCell>
+                  <TableCell>{item.brand || 'Unknown'}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
                       <SelectButton
-                        headline={item.Headline || ''}
+                        headline={item.headline || ''}
                         sourceTable="scrape_data"
-                        sourceId={item.Id}
-                        brand={item.Brand || undefined}
-                        isSelected={isRowSelected(item.Id)}
+                        sourceId={item.id}
+                        brand={item.brand || undefined}
+                        isSelected={isRowSelected(item.id)}
                         onSelectionChange={refetchSelected}
 
                       />
-                      {item["Ad Url"] && (
+                      {item.ad_url && (
                         <Button variant="outline" size="sm" asChild>
-                          <a href={item["Ad Url"]} target="_blank" rel="noopener noreferrer">
+                          <a href={item.ad_url} target="_blank" rel="noopener noreferrer">
                             <ArrowUpRight className="w-6 h-4" />
                           </a>
                         </Button>

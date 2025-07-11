@@ -14,15 +14,15 @@ import { useToast } from "@/hooks/use-toast"
 import { FormatNumber } from "@/utils/FormatNumber"
 
 interface AnstrexDataItem {
-  Id: string
-  Brand: string | null
-  Headline: string
-  Gravity: number | null
-  Date: string | null
-  Network: string | null
-  Duration: number | null
-  "Image Url": string | null
-  Strength: number | null
+  id: string
+  brand: string | null
+  headline: string
+  gravity: number | null
+  date: string | null
+  network: string | null
+  duration: number | null
+  image_url: string | null
+  strength: number | null
 }
 
 const AnstrexData = () => {
@@ -41,14 +41,14 @@ const AnstrexData = () => {
     try {
       const { data, error } = await supabase
         .from('Anstrex Data')
-        .select('Week, Year')
+        .select('week, year')
       if (error) throw error
 
       const weekSet = new Set<number>()
       const yearSet = new Set<number>()
       data?.forEach(r => {
-        weekSet.add(r.Week)
-        yearSet.add(r.Year)
+        weekSet.add(r.week)
+        yearSet.add(r.year)
       })
 
       const sortedWeeks = Array.from(weekSet).sort((a, b) => b - a)
@@ -76,9 +76,9 @@ const AnstrexData = () => {
       const { data, error } = await supabase
         .from('Anstrex Data')
         .select('*')
-        .eq('Week', week)
-        .eq('Year', year)
-        .order('Strength', { ascending: false })
+        .eq('week', week)
+        .eq('year', year)
+        .order('strength', { ascending: false })
         .limit(100)
 
       if (error) throw error
@@ -144,7 +144,7 @@ const AnstrexData = () => {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-primary-light">
-              {FormatNumber(Math.round(anstrexData.reduce((acc, item) => acc + (item.Gravity || 0), 0) / anstrexData.length)) || 0}
+              {FormatNumber(Math.round(anstrexData.reduce((acc, item) => acc + (item.gravity || 0), 0) / anstrexData.length)) || 0}
             </div>
             <div className="text-sm text-gray-600">Avg Gravity</div>
           </CardContent>
@@ -152,7 +152,7 @@ const AnstrexData = () => {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-primary-dark">
-              {FormatNumber(Math.round(anstrexData.reduce((acc, item) => acc + (item.Strength || 0), 0) / anstrexData.length)) || 0}
+              {FormatNumber(Math.round(anstrexData.reduce((acc, item) => acc + (item.strength || 0), 0) / anstrexData.length)) || 0}
             </div>
             <div className="text-sm text-gray-600">Avg Strength</div>
           </CardContent>
@@ -160,7 +160,7 @@ const AnstrexData = () => {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-primary">
-              {new Set(anstrexData.map(item => item.Brand).filter(Boolean)).size}
+              {new Set(anstrexData.map(item => item.brand).filter(Boolean)).size}
             </div>
             <div className="text-sm text-gray-600">Unique Brands</div>
           </CardContent>
@@ -189,32 +189,32 @@ const AnstrexData = () => {
             </TableHeader>
             <TableBody>
               {anstrexData.map((item) => (
-                <TableRow key={item.Id}>
-                  <TableCell className="font-mono text-sm">{item.Id}</TableCell>
-                  <TableCell>{item.Date ? new Date(item.Date).toLocaleDateString() : 'N/A'}</TableCell>
-                  <TableCell>{item.Brand || 'Unknown'}</TableCell>
-                  <TableCell className="max-w-md whitespace-normal break-words" title={item.Headline}>
-                    {item.Headline}
+                <TableRow key={item.id}>
+                  <TableCell className="font-mono text-sm">{item.id}</TableCell>
+                  <TableCell>{item.date ? new Date(item.date).toLocaleDateString() : 'N/A'}</TableCell>
+                  <TableCell>{item.brand || 'Unknown'}</TableCell>
+                  <TableCell className="max-w-md whitespace-normal break-words" title={item.headline}>
+                    {item.headline}
                   </TableCell>
                   <TableCell>
-                    <Badge className={getGravityColor(item.Gravity)}>
-                      {FormatNumber(item.Gravity) || 'N/A'}
+                    <Badge className={getGravityColor(item.gravity)}>
+                      {FormatNumber(item.gravity) || 'N/A'}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge className={getStrengthColor(item.Strength)}>
-                      {FormatNumber(item.Strength) || 'N/A'}
+                    <Badge className={getStrengthColor(item.strength)}>
+                      {FormatNumber(item.strength) || 'N/A'}
                     </Badge>
                   </TableCell>
-                  <TableCell>{item.Network || 'Unknown'}</TableCell>
-                  <TableCell>{item.Duration ? `${item.Duration} days` : 'N/A'}</TableCell>
+                  <TableCell>{item.network || 'Unknown'}</TableCell>
+                  <TableCell>{item.duration ? `${item.duration} days` : 'N/A'}</TableCell>
                   <TableCell>
                     <SelectButton
-                      headline={item.Headline}
+                      headline={item.headline}
                       sourceTable="anstrex_data"
-                      sourceId={item.Id}
-                      brand={item.Brand || undefined}
-                      isSelected={isRowSelected(item.Id)}
+                      sourceId={item.id}
+                      brand={item.brand || undefined}
+                      isSelected={isRowSelected(item.id)}
                       onSelectionChange={refetchSelected}
                     />
                   </TableCell>

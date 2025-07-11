@@ -10,9 +10,9 @@ import SelectButton from "@/components/SelectButton"
 import { useSelectedHeadlines } from "@/hooks/useSelectedHeadlines"
 
 interface TopHeadline {
-  Headline: string | null
+  headline: string | null
   frequency: number | null
-  Id: string | null
+  id: string | null
 }
 
 const generateCryptoId = (): string => {
@@ -58,28 +58,28 @@ const TopHeadlines = () => {
       // Get data from Scrape Data table and aggregate by headline
       const { data: scrapeData, error: scrapeError } = await supabase
         .from('Scrape Data')
-        .select('Headline')
-        .gte('Date', startDate.toISOString())
-        .not('Headline', 'is', null)
+        .select('headline')
+        .gte('date', startDate.toISOString())
+        .not('headline', 'is', null)
 
       if (scrapeError) throw scrapeError
 
       // Filter headlines by length (30-80 characters)
       const filteredData = scrapeData?.filter(item => 
-        item.Headline && item.Headline.length >= 30 && item.Headline.length <= 80
+        item.headline && item.headline.length >= 30 && item.headline.length <= 80
       ) || []
 
       // Aggregate headlines by frequency
       const headlineFreq: { [key: string]: number } = {}
       filteredData.forEach(item => {
-        if (item.Headline) {
-          headlineFreq[item.Headline] = (headlineFreq[item.Headline] || 0) + 1
+        if (item.headline) {
+          headlineFreq[item.headline] = (headlineFreq[item.headline] || 0) + 1
         }
       })
 
       // Convert to array and sort by frequency
       const aggregated = Object.entries(headlineFreq)
-        .map(([headline, frequency]) => ({ Headline: headline, frequency, Id: generateCryptoId(), }))
+        .map(([headline, frequency]) => ({ headline: headline, frequency, id: generateCryptoId(), }))
         .sort((a, b) => (b.frequency || 0) - (a.frequency || 0))
         .slice(0, 20)
 
@@ -140,7 +140,7 @@ const TopHeadlines = () => {
                   </TableCell>
                   <TableCell className="max-w-md">
                     <div className="font-medium">
-                      "{item.Headline || 'No headline'}"
+                      "{item.headline || 'No headline'}"
                     </div>
                     <div className="text-sm text-gray-500 mt-1">
                       High-performing • Multi-platform
@@ -153,14 +153,14 @@ const TopHeadlines = () => {
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline">
-                      {item.Headline?.length || 0} chars
+                      {item.headline?.length || 0} chars
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <SelectButton
-                      headline={item.Headline || ''}
+                      headline={item.headline || ''}
                       sourceTable="topWeeklyHeadlines"
-                      isSelected={isRowSelected(item.Id)}
+                      isSelected={isRowSelected(item.id)}
                       onSelectionChange={refetchSelected}
                     />
                   </TableCell>

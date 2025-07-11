@@ -71,7 +71,7 @@ const Dashboard = () => {
       const { count: todayCount } = await supabase
         .from('Scrape Data')
         .select('*', { count: 'exact' })
-        .gte('Date', today)
+        .gte('date', today)
 
       const { data: frequencyData } = await supabase
         .from('Top 20')
@@ -83,8 +83,8 @@ const Dashboard = () => {
 
       const { data: recentData } = await supabase
         .from('Scrape Data')
-        .select('Headline, Brand, Date, Platform')
-        .order('Date', { ascending: false })
+        .select('headline, brand, date, platform')
+        .order('date', { ascending: false })
         .limit(20)
 
       setStats({
@@ -256,14 +256,14 @@ const Dashboard = () => {
             {recentHeadlines.map((headline, index) => (
               <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                 <div className="flex-1">
-                  <p className="font-medium text-sm">"{headline.Headline}"</p>
+                  <p className="font-medium text-sm">"{headline.headline}"</p>
                   <div className="flex items-center gap-2 mt-1">
-                    {headline.Brand && <Badge variant="outline">{headline.Brand}</Badge>}
-                    {headline.Platform && <Badge variant="secondary" className={getPlatformColor(headline.Platform)}>{headline.Platform}</Badge>}
+                    {headline.brand && <Badge variant="outline">{headline.brand}</Badge>}
+                    {headline.platform && <Badge variant="secondary" className={getPlatformColor(headline.platform)}>{headline.platform}</Badge>}
                   </div>
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  {headline.Date ? new Date(headline.Date).toLocaleDateString() : 'N/A'}
+                  {headline.date ? new Date(headline.date).toLocaleDateString() : 'N/A'}
                 </div>
               </div>
             ))}

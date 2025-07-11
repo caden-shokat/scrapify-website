@@ -30,9 +30,9 @@ interface TopImage {
 }
 
 interface AnstrexItem {
-  Brand: string | null
-  Headline: string
-  Strength: number | null
+  brand: string | null
+  headline: string
+  strength: number | null
 }
 
 interface AdItem {
@@ -59,10 +59,10 @@ export default function PerformanceReports() {
   const fetchWeeks = async () => {
     const { data, error } = await supabase
       .from('Anstrex Data')
-      .select('Week')
-      .not('Week', 'is', null)
+      .select('week')
+      .not('week', 'is', null)
     if (error) console.error(error)
-    const unique = Array.from(new Set(data?.map(r => r.Week).filter(w => w != null))) as number[]
+    const unique = Array.from(new Set(data?.map(r => r.week).filter(w => w != null))) as number[]
     unique.sort((a, b) => b - a)
     setWeeks(unique)
     if (!week && unique.length) setWeek(unique[0])
@@ -92,14 +92,14 @@ export default function PerformanceReports() {
 
       const { data: anData, error: anErr } = await supabase
         .from('Anstrex Data')
-        .select('Brand, Headline, Strength, Length')
-        .eq('Week', week)
-        .not('Strength', 'is', null)
-        .filter('Length', 'gt', '35')
-        .not('Headline', 'like', '%&%')
-        .not('Headline', 'like', '%/%')
-        .not('Headline', 'like', '%\\%%')
-        .order('Strength', { ascending: false })
+        .select('brand, headline, strength, length')
+        .eq('week', week)
+        .not('strength', 'is', null)
+        .filter('length', 'gt', '35')
+        .not('headline', 'like', '%&%')
+        .not('headline', 'like', '%/%')
+        .not('headline', 'like', '%\\%%')
+        .order('strength', { ascending: false })
         .limit(20)
       if (anErr) throw anErr
       setTopAnstrex(anData || [])
@@ -202,9 +202,9 @@ export default function PerformanceReports() {
                 {topAnstrex.map((a, i) => (
                   <TableRow key={i}>
                     <TableCell>#{i+1}</TableCell>
-                    <TableCell>{a.Brand || '—'}</TableCell>
-                    <TableCell>{a.Headline}</TableCell>
-                    <TableCell>{FormatNumber(a.Strength)}</TableCell>
+                    <TableCell>{a.brand || '—'}</TableCell>
+                    <TableCell>{a.headline}</TableCell>
+                    <TableCell>{FormatNumber(a.strength)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
