@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
+import { Github, Info, Container } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -12,15 +13,12 @@ import {
   CardTitle,
   CardFooter
 } from '@/components/ui/card'
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+import HelpButton from '@/components/HelpButton'
 import { useState } from 'react'
 
 export default function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
 
   const { session } = useAuth()
   const navigate = useNavigate()
@@ -40,7 +38,7 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: 'https://caden-shokat.github.io/scrapify-website/',
+          redirectTo: `${window.location.origin}/api/auth/callback`,
         }
       })
 
@@ -52,40 +50,51 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
     }
   }
 
-  const handleEmailLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError(null)
-    try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) throw error
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      setIsLoading(false)
-    }
-  }
-
 
   return (
-    <div className={cn('flex min-h-screen items-center justify-center bg-gray-100', className)} {...props}>
-      <div className="w-full max-w-xl p-12">
-        <div className="flex items-center justify-center mb-6">
+    <div className={cn('flex min-h-screen items-center justify-center', 'bg-[#fafafa]', 'bg-[radial-gradient(#cbd5e1_1px,transparent_1px)]', 'bg-[length:20px_20px]', className)} {...props}>
+      <header className="absolute top-0 left-2 right-0 h-16 flex items-center px-6">
+        {/* Logo at top‑left */}
+        <div className="flex-1 mt-2">
           <img
-              src={`${import.meta.env.BASE_URL}Scrapify_logo.png`}
-              alt="Logo"
-              className="h-16 w-16 rounded-full border border-gray-200"
-            />
+            src={`${import.meta.env.BASE_URL}hearcom.svg`}
+            alt="Hear.com"
+            className="h-10"
+          />
         </div>
-      <Card>
-        <CardHeader className="flex justify-center items-center">
-          <CardTitle className="flex items-center gap-4 text-3xl">
-            Welcome to Scrapify
-          </CardTitle>
-          <CardDescription>Ad Intelligence & Analytics Dashboard</CardDescription>
-        </CardHeader>
-        <CardContent>
-              <div className="flex flex-col gap-4">
-                  <Button variant="default" className="w-full" onClick={handleSocialLogin}>
+
+        {/* Buttons at top‑right */}
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => window.open("https://github.com/caden-shokat/scrapify-website", "_blank")}
+          >
+            <Github className="h-10 w-10" />
+          </Button>
+          <HelpButton />
+        </div>
+      </header>
+
+      <div className="w-full max-w-xl p-24">
+          
+        <div className="flex items-center justify-center mb-2">
+          <img
+              src={`${import.meta.env.BASE_URL}scrapify.png`}
+              alt="Logo"
+              className="h-30 w-80"
+            />
+            
+        </div>
+        <div className="flex flex-col justify-center items-center border border-gray-200 rounded-lg shadow-md p-8 bg-[#ffffff]">
+          <div className={cn("text-2xl flex font-semibold leading-none tracking-tight mb-2 text-gray-800", className)}>
+            Welcome Back
+          </div>
+          <div className={cn("text-sm text-muted-foreground mb-4", className)}>
+            Sign in with your company Google account
+          </div>
+          <div className="flex flex-col gap-4 items-center ">
+                  <Button variant="outline" className="w-60 bg-white shadow-sm" onClick={handleSocialLogin}>
                     <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-label="Google">
                       <title>Google “G”</title>
                       <clipPath id="g">
@@ -102,17 +111,12 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
                     </svg>
                     Login with Google
                   </Button>
-                </div>
-        </CardContent>
-        <CardFooter className="flex flex-col justify-center items-center">
-          <div className="mb-1">
-            Authorized hear.com + audibene.de team members only.
           </div>
-          <div  className="text-sm text-gray-500 mb-2">
-            Sign in with your company Google account.
-          </div>
-        </CardFooter>
-      </Card>
+        </div>
+      
+        <div className="flex items-center justify-center mt-6">
+          
+        </div>
       </div>
     </div>
   )

@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client"
 import HeartButton from "@/components/HeartButton"
 import LoadingSpinner from "@/components/LoadingSpinner"
 import { useToast } from "@/hooks/use-toast"
+import { useRegion } from "@/hooks/useRegion"
 
 interface AIGeneratedHeadline {
   id: string
@@ -21,6 +22,9 @@ const GeneratedHeadlines = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const { toast } = useToast()
+
+  const { region } = useRegion()
+  const german = region === 'DE'
 
   const fetchAIHeadlines = async () => {
     try {
@@ -62,9 +66,9 @@ const GeneratedHeadlines = () => {
   if (error) return <div className="p-6 text-red-600">Error: {error}</div>
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#fafafa] bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] bg-[length:20px_20px]">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">AI Generated Headlines</h1>
+        <h1 className="text-3xl font-bold text-gray-900">{german ? 'KI-generierte Schlagzeilen' : 'AI Generated Headlines'}</h1>
       </div>
 
       {/* Stats */}
@@ -72,16 +76,16 @@ const GeneratedHeadlines = () => {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-primary">{allGeneratedHeadlines.length}</div>
-            <div className="text-sm text-gray-600">Total Generated</div>
+            <div className="text-sm text-gray-600">{german ? 'Gesamt generiert' : 'Total Generated'}</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <div className="flex items-end gap-2">
               <div className="text-2xl font-bold text-primary-light">{averageHeadlineLength}</div>
-              <div className="text-sm text-gray-600">characters</div>
+              <div className="text-sm text-gray-600">{german ? 'charaktere' : 'characters'}</div>
             </div>
-            <div className="text-sm text-gray-600">Average AI Headline Length</div>
+            <div className="text-sm text-gray-600">{german ? 'Durchschnittliche Länge der KI-Überschrift' : 'Average AI Headline Length'}</div>
           </CardContent>
         </Card>
         <Card>
@@ -89,7 +93,7 @@ const GeneratedHeadlines = () => {
             <div className="text-2xl font-bold text-primary-dark">
               {new Set(allGeneratedHeadlines.map(h => h.headline)).size}
             </div>
-            <div className="text-sm text-gray-600">Unique Originals</div>
+            <div className="text-sm text-gray-600">{german ? 'Einzigartige Originale' : 'Unique Originals'}</div>
           </CardContent>
         </Card>
       </div>
@@ -97,7 +101,7 @@ const GeneratedHeadlines = () => {
       {/* All Generated Headlines */}
       <Card>
         <CardHeader>
-          <CardTitle>All Generated Headlines ({allGeneratedHeadlines.length})</CardTitle>
+          <CardTitle>{german ? 'Alle generierten Schlagzeilen' : 'All Generated Headlines'}</CardTitle>
         </CardHeader>
         <CardContent>
           {allGeneratedHeadlines.length === 0 ? (
@@ -109,10 +113,10 @@ const GeneratedHeadlines = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Generated Headline</TableHead>
+                  <TableHead>{german ? 'Generierte Überschrift' : 'Generated Headline'}</TableHead>
                   <TableHead>Original</TableHead>
-                  <TableHead>Generated</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>{german ? 'Generiert' : 'Generated'}</TableHead>
+                  <TableHead>{german ? 'Aktionen' : 'Actions'}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -137,7 +141,7 @@ const GeneratedHeadlines = () => {
           
           <div className="mt-6 text-center">
             <Button variant="outline" onClick={fetchAIHeadlines}>
-              Refresh Headlines
+              {german ? 'Schlagzeilen aktualisieren' : 'Refresh Headlines'}
             </Button>
           </div>
         </CardContent>

@@ -10,6 +10,7 @@ import SelectButton from "@/components/SelectButton"
 import { useToast } from "@/hooks/use-toast"  
 import { useSelectedHeadlines } from "@/hooks/useSelectedHeadlines"
 import LoadingSpinner from "@/components/LoadingSpinner"
+import { useRegion } from "@/hooks/useRegion"
 
 interface CTRPotentialAd {
   id: string
@@ -32,6 +33,9 @@ const CTRPotential = () => {
   const [week,  setWeek]  = useState<number|null>(null)
   const [year,  setYear]  = useState<number|null>(null)
 
+  const { region } = useRegion()
+  const german = region == 'DE'
+
    const { selectedHeadlines, loading: loadingSelected, refetch: refetchSelected } = useSelectedHeadlines()
   
   const isRowSelected = (id: string) =>
@@ -45,6 +49,7 @@ const CTRPotential = () => {
       const { data, error } = await supabase
         .from('topWeeklyCTR')
         .select('week, year')
+        .eq('region', region)
       if (error) throw error
 
       const weekSet = new Set<number>()
@@ -76,6 +81,7 @@ const CTRPotential = () => {
         .select('id, headline, brand, platform, position, week, year')
         .eq('week', week)
         .eq('year', year)
+        .eq('region', region)
         .order('position', { ascending: true })
       if (error) throw error
 
@@ -100,8 +106,8 @@ const CTRPotential = () => {
     return colors[platform] || "bg-gray-100 text-gray-800"
   }
 
-  useEffect(() => { fetchWeekYearOptions() }, [])
-  useEffect(() => { fetchItems() }, [week, year])
+  useEffect(() => { fetchWeekYearOptions() }, [region])
+  useEffect(() => { fetchItems() }, [region, week, year])
 
   if (loading) return <LoadingSpinner />
   if (error)   return <div className="p-6 text-red-600">Error: {error}</div>
@@ -109,10 +115,10 @@ const CTRPotential = () => {
 
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#fafafa] bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] bg-[length:20px_20px]">
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">CTR Potential</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{german ? 'CTR Potenzial' : 'CTR Potential'}</h1>
         </div>
         
         <div className="flex gap-2">
@@ -125,10 +131,10 @@ const CTRPotential = () => {
           <Select value={week?.toString() || ''} onValueChange={v => setWeek(+v)}>
             <SelectTrigger className="w-32"><SelectValue placeholder="Week"/></SelectTrigger>
             <SelectContent>
-              {weeks.map(w => <SelectItem key={w} value={w.toString()}>Week {w}</SelectItem>)}
+              {weeks.map(w => <SelectItem key={w} value={w.toString()}>{german ? 'Woche' : 'Week'} {w}</SelectItem>)}
             </SelectContent>
           </Select>
-          <Button onClick={fetchItems} variant="outline">Refresh</Button>
+          <Button onClick={fetchItems} variant="outline">{german ? 'Aktualisieren' : 'Refresh'}</Button>
         </div>
       </div>
 
@@ -140,13 +146,13 @@ const CTRPotential = () => {
               <Target className="w-3 h-3 mr-1" />
               Position 1-5
             </Badge>
-            <Badge variant="outline">30-80 Characters</Badge>
-            <Badge variant="outline">No $, /, % symbols</Badge>
+            <Badge variant="outline">{german ? '30-80 Zeichen' : '30-80 Characters'}</Badge>
+            <Badge variant="outline">{german ? 'Keine €, /, % symbole' : 'No $, /, % symbols'}</Badge>
             <Badge variant="outline">
               <TrendingUp className="w-3 h-3 mr-1" />
-              High CTR Potential
+              {german ? 'Hohes CTR-Potenzial' : 'High CTR Potential'}
             </Badge>
-            <Badge variant="outline">Weekly Data</Badge>
+            <Badge variant="outline">{german ? 'Wöchentliche Daten' : 'Weekly Data'}</Badge>
           </div>
         </CardContent>
       </Card>
@@ -156,7 +162,7 @@ const CTRPotential = () => {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-primary">{items.length}</div>
-            <div className="text-sm text-gray-600">Potential Ads</div>
+            <div className="text-sm text-gray-600">{german ? 'Potenzielle Anzeigen' : 'Potential Ads'}</div>
           </CardContent>
         </Card>
         <Card>
@@ -164,7 +170,7 @@ const CTRPotential = () => {
             <div className="text-2xl font-bold text-primary-light">
               {Math.round(items.reduce((acc, item) => acc + (item.headline?.length || 0), 0) / items.length) || 0}
             </div>
-            <div className="text-sm text-gray-600">Avg Characters</div>
+            <div className="text-sm text-gray-600">{german ? 'Durchschnittliche Anzahl Zeichen' : 'Avg Characters'}</div>
           </CardContent>
         </Card>
         <Card>
@@ -172,7 +178,7 @@ const CTRPotential = () => {
             <div className="text-2xl font-bold text-primary-dark">
               {new Set(items.map(item => item.platform).filter(Boolean)).size}
             </div>
-            <div className="text-sm text-gray-600">Platforms</div>
+            <div className="text-sm text-gray-600">{german ? 'Plattformen' : 'Platforms'}</div>
           </CardContent>
         </Card>
         <Card>
@@ -180,7 +186,7 @@ const CTRPotential = () => {
             <div className="text-2xl font-bold text-primary">
               {new Set(items.map(item => item.brand).filter(Boolean)).size}
             </div>
-            <div className="text-sm text-gray-600">Unique Brands</div>
+            <div className="text-sm text-gray-600">{german ? 'Einzigartige Marken' : 'Unique Brands'}</div>
           </CardContent>
         </Card>
       </div>
@@ -188,19 +194,19 @@ const CTRPotential = () => {
       {/* CTR Potential Table */}
       <Card>
         <CardHeader>
-          <CardTitle>High CTR Potential Ads</CardTitle>
+          <CardTitle>{german ? 'Anzeigen mit hoher Klickrate' : 'High CTR Potential Ads'}</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Platform</TableHead>
+                <TableHead>{german ? 'AUSWEIS' : 'ID'}</TableHead>
+                <TableHead>{german ? 'Plattform' : 'Platform'}</TableHead>
                 <TableHead>Position</TableHead>
-                <TableHead>Headline</TableHead>
-                <TableHead>Brand</TableHead>
-                <TableHead>Characters</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>{german ? 'Überschrift' : 'Headline'}</TableHead>
+                <TableHead>{german ? 'Marke' : 'Brand'}</TableHead>
+                <TableHead>{german ? 'Charaktere' : 'Characters'}</TableHead>
+                <TableHead>{german ? 'Aktionen' : 'Actions'}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -236,6 +242,7 @@ const CTRPotential = () => {
                         headline={item.headline || ''}
                         sourceTable="scrape_data"
                         sourceId={item.id}
+                        region={region}
                         brand={item.brand || undefined}
                         isSelected={isRowSelected(item.id)}
                         onSelectionChange={refetchSelected}
@@ -248,7 +255,7 @@ const CTRPotential = () => {
           
           <div className="mt-6 text-center">
             <Button variant="outline" onClick={fetchItems}>
-              Refresh Data
+              {german ? 'Daten aktualisieren' : 'Refresh Data'}
             </Button>
           </div>
         </CardContent>

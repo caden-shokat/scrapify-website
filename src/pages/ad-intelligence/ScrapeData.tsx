@@ -11,6 +11,7 @@ import SelectButton from "@/components/SelectButton"
 import { ArrowUpRight } from "lucide-react"
 import { useSelectedHeadlines } from "@/hooks/useSelectedHeadlines"
 import { FormatNumber } from "@/utils/FormatNumber"
+import { useRegion } from "@/hooks/useRegion"
 
 interface ScrapeDataItem {
   id: string
@@ -31,14 +32,22 @@ const ScrapeData = () => {
   const [error, setError] = useState<string | null>(null)
   const itemsPerPage = 50
 
+  const {region} = useRegion()
+  const german = region == 'DE'
+
   const { selectedHeadlines, loading: loadingSelected, refetch: refetchSelected } = useSelectedHeadlines()
 
   const isRowSelected = (id: string) =>
     selectedHeadlines.some(sh => sh.source_id === id)
 
   useEffect(() => {
+    setCurrentPage(1)
+  }, [region])
+
+
+  useEffect(() => {
     fetchScrapeData()
-  }, [currentPage])
+  }, [region, currentPage])
 
   const fetchScrapeData = async () => {
     try {
@@ -47,6 +56,7 @@ const ScrapeData = () => {
       const { count, error: countError } = await supabase
         .from('Scrape Data')
         .select('*', { count: 'exact', head: true })
+        .eq('region', region)
 
       if (countError) throw countError
       setTotalCount(count || 0)
@@ -54,6 +64,7 @@ const ScrapeData = () => {
       const { data, error } = await supabase
         .from('Scrape Data')
         .select('*')
+        .eq('region', region)
         .order('date', { ascending: false })
         .order('position', {ascending: false})
         .range((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage - 1)
@@ -85,9 +96,9 @@ const ScrapeData = () => {
   if (error) return <div className="p-6 text-red-600">Error: {error}</div>
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#fafafa] bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] bg-[length:20px_20px]">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Scrape Data</h1>
+        <h1 className="text-3xl font-bold text-gray-900">{german ? 'Daten scrapen' : 'Scrape Data'}</h1>
       </div>
 
       {/* Stats Summary */}
@@ -95,7 +106,7 @@ const ScrapeData = () => {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-primary">{FormatNumber(totalCount)}</div>
-            <div className="text-sm text-gray-600">Total Ads</div>
+            <div className="text-sm text-gray-600">{german ? 'Anzeigen insgesamt' : 'Total Ads'}</div>
           </CardContent>
         </Card>
         <Card>
@@ -103,7 +114,7 @@ const ScrapeData = () => {
             <div className="text-2xl font-bold text-primary-light">
               5
             </div>
-            <div className="text-sm text-gray-600">Platforms</div>
+            <div className="text-sm text-gray-600">{german ? 'Plattformen' : 'Platforms'}</div>
           </CardContent>
         </Card>
         <Card>
@@ -111,15 +122,15 @@ const ScrapeData = () => {
             <div className="text-2xl font-bold text-primary-dark">
               {new Set(scrapeData.map(item => item.brand).filter(Boolean)).size}
             </div>
-            <div className="text-sm text-gray-600">Brands</div>
+            <div className="text-sm text-gray-600">{german ? 'Marken' : 'Brands'}</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-primary">
-              Page {currentPage} of {totalPages}
+              {german ? `Seite ${currentPage} von ${totalPages}` : `Page ${currentPage} of ${totalPages}`}
             </div>
-            <div className="text-sm text-gray-600">Current Page</div>
+            <div className="text-sm text-gray-600">{german ? 'Aktuelle Seite' : 'Current Page'}</div>
           </CardContent>
         </Card>
       </div>
@@ -127,19 +138,19 @@ const ScrapeData = () => {
       {/* Data Table */}
       <Card>
         <CardHeader>
-          <CardTitle>All Ad Data</CardTitle>
+          <CardTitle>{german ? 'Alle Anzeigendaten' : 'All Ad Data'}</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Platform</TableHead>
+                <TableHead>{german ? 'AUSWEIS' : 'ID'}</TableHead>
+                <TableHead>{german ? 'Datum' : 'Date'}</TableHead>
+                <TableHead>{german ? 'Plattform' : 'Platform'}</TableHead>
                 <TableHead>Position</TableHead>
-                <TableHead>Headline</TableHead>
-                <TableHead>Brand</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>{german ? 'Überschrift' : 'Headline'}</TableHead>
+                <TableHead>{german ? 'Marke' : 'Brand'}</TableHead>
+                <TableHead>{german ? 'Aktionen' : 'Actions'}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -163,6 +174,7 @@ const ScrapeData = () => {
                         headline={item.headline || ''}
                         sourceTable="scrape_data"
                         sourceId={item.id}
+                        region={region}
                         brand={item.brand || undefined}
                         isSelected={isRowSelected(item.id)}
                         onSelectionChange={refetchSelected}

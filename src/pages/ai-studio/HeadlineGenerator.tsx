@@ -10,6 +10,7 @@ import LoadingSpinner from "@/components/LoadingSpinner"
 import { useToast } from "@/hooks/use-toast"
 import HeartButton from "@/components/HeartButton"
 import { useAuth } from "@/hooks/useAuth"
+import { useRegion } from "@/hooks/useRegion"
 
 export default function HeadlineGenerator() {
   const { selectedHeadlines: items, loading, refetch } = useSelectedHeadlines()
@@ -18,6 +19,8 @@ export default function HeadlineGenerator() {
   const { toast } = useToast()
   const { session } = useAuth()
   const user = session?.user.id
+  const { region } = useRegion()
+  const german = region == 'DE'
 
   const generateAIHeadlines = async () => {
     if (!items.length) {
@@ -31,7 +34,7 @@ export default function HeadlineGenerator() {
 
     setGenerating(true)
     try {
-      const { data, error } = await supabase.functions.invoke("generate-ai-headlines", {
+      const { data, error } = await supabase.functions.invoke("generate-regional-headlines", {
         body: { selectedHeadlines: items },
       })
       if (error) throw error
@@ -67,7 +70,7 @@ export default function HeadlineGenerator() {
     setBusyId(id)
     try {
       const { data, error } = await supabase.functions.invoke(
-        "generate-ai-headlines",
+        "generate-regional-headlines",
         {
           body: { selectedHeadlines: [toBeRegenerated] },
           headers: {
@@ -125,23 +128,23 @@ export default function HeadlineGenerator() {
   if (loading) return <LoadingSpinner />
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 h-full bg-[#fafafa] bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] bg-[length:20px_20px]">
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Headline Generator</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{german ? 'Schlagzeilengenerator' : 'Headline Generator'}</h1>
         </div>
       </div>
 
       {/* Action Panel */}
       <Card>
         <CardContent className="p-4 flex items-center justify-between">
-          <Badge variant="outline">{items.length} selected</Badge>
+          <Badge variant="outline">{items.length} {german ? 'ausgewählt' : 'selected'}</Badge>
           <div className="flex gap-2">
             {items.length > 0 && (
               <Button variant="outline" onClick={clearAll}>
                 <Trash2 className="w-4 h-4 mr-2" />
-                Clear All
+                {german ? 'Alles löschen' : 'Clear All'}
               </Button>
             )}
             <Button
@@ -150,7 +153,7 @@ export default function HeadlineGenerator() {
               className="bg-primary hover:bg-primary-light"
             >
               <Sparkles className={`w-4 h-4 mr-2 ${generating ? "animate-spin" : ""}`} />
-              {generating ? "Generating..." : "Generate AI Headlines"}
+              {german ? `${generating ? "Erzeugen" : "KI-Schlagzeilen generieren"}` : `${generating ? "Generating..." : "Generate AI Headlines"}`}
             </Button>
           </div>
         </CardContent>
@@ -159,7 +162,7 @@ export default function HeadlineGenerator() {
       {/* Selected Headlines Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Selected Headlines ({items.length})</CardTitle>
+          <CardTitle>{german ? 'Ausgewählte Schlagzeilen' : 'Selected Headlines'} ({items.length})</CardTitle>
         </CardHeader>
         <CardContent>
           {items.length === 0 ? (
@@ -174,12 +177,12 @@ export default function HeadlineGenerator() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Headline</TableHead>
-                  <TableHead>Source</TableHead>
-                  <TableHead>AI Headline</TableHead>
-                  <TableHead className="text-center">Favorite</TableHead>
-                  <TableHead>Selected</TableHead>
-                  <TableHead className="text-center">Actions</TableHead>
+                  <TableHead>{german ? 'Überschrift' : 'Headline'}</TableHead>
+                  <TableHead>{german ? 'Quelle' : 'Source'}</TableHead>
+                  <TableHead>{german ? 'KI-Schlagzeile' : 'AI Headline'}</TableHead>
+                  <TableHead className="text-center">{german ? 'Favorit' : 'Favorite'}</TableHead>
+                  <TableHead>{german ? 'Ausgewählt' : 'Selected'}</TableHead>
+                  <TableHead className="text-center">{german ? 'Aktionen' : 'Actions'}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -215,7 +218,7 @@ export default function HeadlineGenerator() {
                     <TableCell className="flex justify-center gap-2">
                       <Button
                         size="icon"
-                        variant="ghost"
+                        variant="outline"
                         onClick={() => regenerate(item.id)}
                         disabled={busyId === item.id}
                       >

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { supabase } from "@/integrations/supabase/client"
 import { Eye, Image as ImageIcon, Sparkles } from "lucide-react"
 import LoadingSpinner from "@/components/LoadingSpinner"
+import { useRegion } from "@/hooks/useRegion"
 
 interface ImageData {
   id: string
@@ -22,7 +23,8 @@ const ImageClassifier = () => {
   const [analyzing, setAnalyzing] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
 
-  
+  const { region } = useRegion()
+  const german = region == 'DE'
 
   const fetchImages = async () => {
     try {
@@ -30,9 +32,10 @@ const ImageClassifier = () => {
       const { data, error } = await supabase
         .from('Scrape Data')
         .select('id, image_url, headline, brand, platform')
+        .eq('region', region)
         .not('image_url', 'is', null)
         .order('date', { ascending: false })
-        .limit(20)
+        .limit(40)
 
       if (error) throw error
       setImages(data || [])
@@ -79,9 +82,9 @@ const ImageClassifier = () => {
   if (error) return <div className="p-6 text-red-600">Error: {error}</div>
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#fafafa] bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] bg-[length:20px_20px]">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Image Classifier</h1>
+        <h1 className="text-3xl font-bold text-gray-900">{german ? 'Bildklassifizierer' : 'Image Classifier'}</h1>
       </div>
 
       {/* Stats */}
@@ -90,13 +93,13 @@ const ImageClassifier = () => {
           <div className="flex items-center gap-4 text-sm">
             <Badge variant="outline">
               <ImageIcon className="w-3 h-3 mr-1" />
-              {images.length} Images
+              {images.length} {german ? 'Bilder' : 'Images'}
             </Badge>
             <Badge variant="outline">
               <Sparkles className="w-3 h-3 mr-1" />
-              {images.filter(img => img.aiDescription).length} Analyzed
+              {images.filter(img => img.aiDescription).length} {german ? 'Analysiert' : 'Analyzed'}
             </Badge>
-            <Badge variant="outline">Ready for Classification</Badge>
+            <Badge variant="outline">{german ? 'Bereit zur Klassifizierung' : 'Ready for Classification'}</Badge>
           </div>
         </CardContent>
       </Card>
@@ -164,12 +167,12 @@ const ImageClassifier = () => {
                     ) : image.aiDescription ? (
                       <>
                         <Eye className="w-3 h-3 mr-2" />
-                        Analyzed
+                        {german ? 'Analysiert' : 'Analyzed'}
                       </>
                     ) : (
                       <>
                         <Sparkles className="w-3 h-3 mr-2" />
-                        Analyze Image
+                        {german ? 'Bild analysieren' : 'Analyze Image'}
                       </>
                     )}
                   </Button>
@@ -183,7 +186,7 @@ const ImageClassifier = () => {
       {/* Refresh Button */}
       <div className="text-center">
         <Button variant="outline" onClick={fetchImages}>
-          Load More Images
+          {german ? 'Weitere Bilder laden' : 'Load More Images'}
         </Button>
       </div>
     </div>

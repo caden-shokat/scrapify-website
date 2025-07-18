@@ -12,6 +12,7 @@ import LoadingSpinner from "@/components/LoadingSpinner"
 import { useSelectedHeadlines } from "@/hooks/useSelectedHeadlines"
 import { useToast } from "@/hooks/use-toast"  
 import { FormatNumber } from "@/utils/FormatNumber"
+import { useRegion } from "@/hooks/useRegion"
 
 interface AnstrexDataItem {
   id: string
@@ -34,6 +35,9 @@ const AnstrexData = () => {
   const [years, setYears] = useState<number[]>([])
   const [week,  setWeek]  = useState<number|null>(null)
   const [year,  setYear]  = useState<number|null>(null)
+
+  const { region } = useRegion()
+  const german = region == 'DE'
 
   const { toast } = useToast()
 
@@ -76,6 +80,7 @@ const AnstrexData = () => {
       const { data, error } = await supabase
         .from('Anstrex Data')
         .select('*')
+        .eq('region', region)
         .eq('week', week)
         .eq('year', year)
         .order('strength', { ascending: false })
@@ -91,7 +96,7 @@ const AnstrexData = () => {
   }
 
   useEffect(() => { fetchWeekYearOptions() }, [])
-  useEffect(() => { fetchAnstrexData() }, [week, year])
+  useEffect(() => { fetchAnstrexData() }, [week, year, region])
 
   const getGravityColor = (gravity: number | null) => {
     if (!gravity) return "bg-gray-100 text-gray-800"
@@ -114,7 +119,7 @@ const AnstrexData = () => {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Anstrex Data</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{german ? 'Anstrex-Daten' : 'Anstrex Data'}</h1>
         </div>
         
         <div className="flex gap-2">
@@ -127,7 +132,7 @@ const AnstrexData = () => {
             <Select value={week?.toString() || ''} onValueChange={v => setWeek(+v)}>
               <SelectTrigger className="w-32"><SelectValue placeholder="Week"/></SelectTrigger>
               <SelectContent>
-                {weeks.map(w => <SelectItem key={w} value={w.toString()}>Week {w}</SelectItem>)}
+                {weeks.map(w => <SelectItem key={w} value={w.toString()}>{german ? 'Woche' : 'Week'} {w}</SelectItem>)}
               </SelectContent>
             </Select>
         </div>
@@ -138,7 +143,7 @@ const AnstrexData = () => {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-primary">{anstrexData.length}</div>
-            <div className="text-sm text-gray-600">Total Ads</div>
+            <div className="text-sm text-gray-600">{german ? 'Anzeigen insgesamt' : 'Total Ads'}</div>
           </CardContent>
         </Card>
         <Card>
@@ -146,7 +151,7 @@ const AnstrexData = () => {
             <div className="text-2xl font-bold text-primary-light">
               {FormatNumber(Math.round(anstrexData.reduce((acc, item) => acc + (item.gravity || 0), 0) / anstrexData.length)) || 0}
             </div>
-            <div className="text-sm text-gray-600">Avg Gravity</div>
+            <div className="text-sm text-gray-600">{german ? 'Durchschnittliche Schwerkraft' : 'Avg Gravity'}</div>
           </CardContent>
         </Card>
         <Card>
@@ -154,7 +159,7 @@ const AnstrexData = () => {
             <div className="text-2xl font-bold text-primary-dark">
               {FormatNumber(Math.round(anstrexData.reduce((acc, item) => acc + (item.strength || 0), 0) / anstrexData.length)) || 0}
             </div>
-            <div className="text-sm text-gray-600">Avg Strength</div>
+            <div className="text-sm text-gray-600">{german ? 'Durchschnittliche Stärke' : 'Avg Strength'}</div>
           </CardContent>
         </Card>
         <Card>
@@ -162,7 +167,7 @@ const AnstrexData = () => {
             <div className="text-2xl font-bold text-primary">
               {new Set(anstrexData.map(item => item.brand).filter(Boolean)).size}
             </div>
-            <div className="text-sm text-gray-600">Unique Brands</div>
+            <div className="text-sm text-gray-600">{german ? 'Einzigartige Marken' : 'Unique Brands'}</div>
           </CardContent>
         </Card>
       </div>
@@ -170,21 +175,21 @@ const AnstrexData = () => {
       {/* Data Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Anstrex Ad Intelligence ({week})</CardTitle>
+          <CardTitle>Anstrex Ad Intelligence</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Brand</TableHead>
-                <TableHead>Headline</TableHead>
-                <TableHead>Gravity</TableHead>
-                <TableHead>Strength</TableHead>
-                <TableHead>Network</TableHead>
-                <TableHead>Duration</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>{german ? 'AUSWEIS' : 'ID'}</TableHead>
+                <TableHead>{german ? 'Datum' : 'Date'}</TableHead>
+                <TableHead>{german ? 'Marke' : 'Brand'}</TableHead>
+                <TableHead>{german ? 'Überschrift' : 'Headline'}</TableHead>
+                <TableHead>{german ? 'Schwerkraft' : 'Gravity'}</TableHead>
+                <TableHead>{german ? 'Stärke' : 'Strength'}</TableHead>
+                <TableHead>{german ? 'Netzwerk' : 'Network'}</TableHead>
+                <TableHead>{german ? 'Dauer' : 'Duration'}</TableHead>
+                <TableHead>{german ? 'Aktionen' : 'Actions'}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -198,21 +203,22 @@ const AnstrexData = () => {
                   </TableCell>
                   <TableCell>
                     <Badge className={getGravityColor(item.gravity)}>
-                      {FormatNumber(item.gravity) || 'N/A'}
+                      {FormatNumber(item.gravity) || '0'}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <Badge className={getStrengthColor(item.strength)}>
-                      {FormatNumber(item.strength) || 'N/A'}
+                      {FormatNumber(item.strength) || '0'}
                     </Badge>
                   </TableCell>
                   <TableCell>{item.network || 'Unknown'}</TableCell>
-                  <TableCell>{item.duration ? `${item.duration} days` : 'N/A'}</TableCell>
+                  <TableCell>{item.duration ? `${item.duration} days` : '0'}</TableCell>
                   <TableCell>
                     <SelectButton
                       headline={item.headline}
                       sourceTable="anstrex_data"
                       sourceId={item.id}
+                      region={region}
                       brand={item.brand || undefined}
                       isSelected={isRowSelected(item.id)}
                       onSelectionChange={refetchSelected}
@@ -225,7 +231,7 @@ const AnstrexData = () => {
           
           <div className="mt-6 text-center">
             <Button onClick={fetchAnstrexData}>
-              Refresh Data
+              {german ? 'Daten aktualisieren' : 'Refresh Data'}
             </Button>
           </div>
         </CardContent>

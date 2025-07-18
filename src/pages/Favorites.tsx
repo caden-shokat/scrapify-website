@@ -5,7 +5,8 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import HeartButton from "@/components/HeartButton";
-import { useAuth } from "@/hooks/useAuth"
+import { useAuth } from "@/hooks/useAuth";
+import { useRegion } from "@/hooks/useRegion";
 
 interface FavoritedHeadline {
   id: string;
@@ -23,6 +24,9 @@ export default function Favorites() {
   const { toast } = useToast();
   const { session } = useAuth()
   const user = session?.user.id
+
+  const { region } = useRegion();
+  const german = region === 'DE';
 
   useEffect(() => {
     (async () => {
@@ -46,35 +50,35 @@ export default function Favorites() {
   if (error)   return <div className="p-6 text-red-600">Error: {error}</div>;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#fafafa] bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] bg-[length:20px_20px]">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">My Favorite Headlines</h1>
+        <h1 className="text-3xl font-bold text-gray-900">{german ? 'Beliebte Schlagzeilen' : 'Favorited Headlines'}</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card><CardContent className="p-4">
           <div className="text-2xl font-bold text-primary">{favorites.length}</div>
-          <div className="text-sm text-gray-600">Total Favorites</div>
+          <div className="text-sm text-gray-600">{german ? 'Favoriten gesamt' : 'Total Favorites'}</div>
         </CardContent></Card>
 
         <Card><CardContent className="p-4">
           <div className="text-2xl font-bold text-primary">
             {new Set(favorites.map((f) => f.headline)).size}
           </div>
-          <div className="text-sm text-gray-600">Unique Originals</div>
+          <div className="text-sm text-gray-600">{german ? 'Einzigartige Originale' : 'Unique Originals'}</div>
         </CardContent></Card>
 
         <Card><CardContent className="p-4">
           <div className="text-2xl font-bold text-primary">
             {new Set(favorites.map((f) => f.source_table)).size}
           </div>
-          <div className="text-sm text-gray-600">Different Sources</div>
+          <div className="text-sm text-gray-600">{german ? 'Verschiedene Quellen' : 'Different Sources'}</div>
         </CardContent></Card>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Favorites List</CardTitle>
+          <CardTitle>{german ? 'Favoritenliste' : 'Favorites List'}</CardTitle>
         </CardHeader>
         <CardContent>
           {favorites.length === 0 ? (
@@ -85,11 +89,11 @@ export default function Favorites() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>AI Headline</TableHead>
-                  <TableHead>Original</TableHead>
-                  <TableHead>Source Table</TableHead>
-                  <TableHead>Favorited On</TableHead>
-                  <TableHead>Action</TableHead>
+                  <TableHead>{german ? 'KI-Schlagzeile' : 'AI Headline'}</TableHead>
+                  <TableHead>{german ? 'Original' : 'Original'}</TableHead>
+                  <TableHead>{german ? 'Quelltabelle' : 'Source Table'}</TableHead>
+                  <TableHead>{german ? 'Als Favorit markiert am' : 'Favorited On'}</TableHead>
+                  <TableHead>{german ? 'Aktion' : 'Action'}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
