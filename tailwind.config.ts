@@ -56,7 +56,7 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				sidebar: {
-					DEFAULT: '#f8fafc',
+					DEFAULT: '#ffffffff',
 					foreground: '#475569',
 					primary: '#127846',
 					'primary-foreground': '#ffffff',
@@ -64,6 +64,9 @@ export default {
 					'accent-foreground': '#374151',
 					border: '#e2e8f0',
 					ring: '#127846'
+				},
+				backgroundImage: {
+					'dot-grid': 'radial-gradient(#1e1e1e 1px, transparent 1px)',
 				}
 			},
 			borderRadius: {
