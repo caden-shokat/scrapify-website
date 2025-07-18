@@ -7,7 +7,7 @@ export default function LogoutButton() {
   }
   
   return (
-    <Button variant="outline" className="rounded-full" onClick={handleClick}>
+    <Button variant="ghost" className="rounded-full" onClick={handleClick}>
       <Info />
     </Button>
   )

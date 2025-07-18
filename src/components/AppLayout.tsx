@@ -3,8 +3,19 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "./AppSidebar"
 import LogoutButton from '@/components/LogoutButton'
 import HelpButton from '@/components/HelpButton'
+import { useRegion } from "@/hooks/useRegion"
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select'
+
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
+  const { region, setRegion } = useRegion();
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex flex-col w-full bg-white">
@@ -32,6 +43,22 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="text-right">
               <div className="flex justify-center items-center gap-2">
                 <HelpButton />
+                <Select
+                  value={region}
+                  onValueChange={(v) => setRegion(v as 'US' | 'DE')}
+                >
+                  <SelectTrigger className="w-18 gap-1">
+                    <SelectValue placeholder="Region" className="w-18"/>
+                  </SelectTrigger>
+                  <SelectContent className="w-8">
+                    <SelectItem value="US">
+                      <img src={`${import.meta.env.BASE_URL}usa.png`} alt="usa" className="h-6 w-6"/>
+                    </SelectItem>
+                    <SelectItem value="DE">
+                      <img src={`${import.meta.env.BASE_URL}germany.png`} alt="de" className="h-6 w-6"/>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
                 <LogoutButton />
               </div>
             </div>

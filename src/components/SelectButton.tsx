@@ -11,6 +11,7 @@ interface SelectButtonProps {
   sourceTable: string
   sourceId?: string
   brand?: string
+  region: string
   isSelected?: boolean
   onSelectionChange: () => void
 }
@@ -20,6 +21,7 @@ const SelectButton = ({
   sourceTable,
   sourceId,
   brand,
+  region,
   isSelected,
   onSelectionChange,
 }: SelectButtonProps) => {
@@ -48,6 +50,7 @@ const SelectButton = ({
             source_table: sourceTable,
             source_id: sourceId,
             brand,
+            region,
           })
         if (error) throw error
       }

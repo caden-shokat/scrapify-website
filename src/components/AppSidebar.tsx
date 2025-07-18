@@ -12,6 +12,25 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useRegion } from "@/hooks/useRegion"
+
+const DE: Record<string,string> = {
+  "Dashboard":           "Übersicht",
+  "Scrape Data":         "Scrape Daten",
+  "Anstrex Data":        "Anstrex Daten",
+  "Top Images":          "Top Bilder",
+  "CTR Potential":       "CTR Potenzial",
+  "Headline Generator":  "Überschriften‑Generator",
+  "Top Headlines":       "Top‑Schlagzeilen",
+  "Image Classifier - Beta": "Bildklassifizierung ‑ Beta",
+  "Weekly Report":       "Wöchentlicher Bericht",
+  "Trend Analysis":      "Trendanalyse",
+  "Campaign ‑ Beta":     "Kampagne ‑ Beta",
+  "Competitive ‑ Beta":  "Wettbewerb ‑ Beta",
+  "Favorites":           "Favoriten",
+  "Stored AI Headlines": "KI‑Schlagzeilen",
+}
+
 
 const mainItems = [
   { title: "Dashboard", url: "/", icon: Home },
@@ -53,6 +72,9 @@ export function AppSidebar() {
   const currentPath = location.pathname
   const collapsed = state === "collapsed"
 
+  const { region } = useRegion()
+  const german = region == 'DE'
+
   const isActive = (path: string) => currentPath === path
   
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
@@ -62,7 +84,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar
-      className={`top-16 h-[calc(100vh-4rem)] transition-all duration-300 ${collapsed ? "w-14" : "w-64"} border-r border-sidebar-border bg-sidebar`}
+      className={`top-16 h-[calc(100vh-4rem)] transition-all duration-[75] ${collapsed ? "w-14" : "w-60"} border-r border-sidebar-border bg-sidebar`}
       collapsible="icon"
     >
       <SidebarContent className="p-2" style={{ scrollbarWidth: 'thin', scrollbarColor: '#cbd5e1 transparent' }}>
@@ -75,7 +97,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild className="mb-1">
                     <NavLink to={item.url} end className={getNavCls}>
                       <item.icon className={`text-[#127846] h-4 w-4 ${collapsed ? "mx-auto" : "mr-3"}`} />
-                      {!collapsed && <span>{item.title}</span>}
+                      {!collapsed && <span>{german ? DE[item.title] ?? item.title : item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -94,7 +116,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild className="mb-1">
                     <NavLink to={item.url} className={getNavCls}>
                       <item.icon className={`text-[#127846] h-4 w-4 ${collapsed ? "mx-auto" : "mr-3"}`} />
-                      {!collapsed && <span className="text-sm">{item.title}</span>}
+                      {!collapsed && <span className="text-sm">{german ? DE[item.title] ?? item.title : item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -113,7 +135,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild className="mb-1">
                     <NavLink to={item.url} className={getNavCls}>
                       <item.icon className={`text-[#127846] h-4 w-4 ${collapsed ? "mx-auto" : "mr-3"}`} />
-                      {!collapsed && <span className="text-sm">{item.title}</span>}
+                      {!collapsed && <span className="text-sm">{german ? DE[item.title] ?? item.title : item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -132,7 +154,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild className="mb-1">
                     <NavLink to={item.url} className={getNavCls}>
                       <item.icon className={`text-[#127846] h-4 w-4 ${collapsed ? "mx-auto" : "mr-3"}`} />
-                      {!collapsed && <span className="text-sm">{item.title}</span>}
+                      {!collapsed && <span className="text-sm">{german ? DE[item.title] ?? item.title : item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -171,7 +193,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild className="mb-1">
                     <NavLink to={item.url} className={getNavCls}>
                       <item.icon className={`text-[#127846] h-4 w-4 ${collapsed ? "mx-auto" : "mr-3"}`} />
-                      {!collapsed && <span className="text-sm">{item.title}</span>}
+                      {!collapsed && <span className="text-sm">{german ? DE[item.title] ?? item.title : item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
