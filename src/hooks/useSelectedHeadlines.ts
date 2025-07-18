@@ -8,6 +8,7 @@ interface SelectedHeadline {
   source_table: string
   source_id: string
   brand: string | null
+  region: string
   selected_at: string
   ai_headline: string | null
 }
@@ -23,7 +24,7 @@ export const useSelectedHeadlines = () => {
     try {
       const { data, error } = await supabase
         .from('selected')
-        .select('id,headline,source_table,source_id,brand,selected_at,ai_headline')
+        .select('id,headline,source_table,source_id,brand,selected_at,ai_headline,region')
         .eq("user", user)
         .order('selected_at', { ascending: false })
 

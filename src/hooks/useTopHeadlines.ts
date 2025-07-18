@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/hooks/useAuth"
+import { useRegion } from "@/hooks/useRegion"
 
 export interface TopHeadline {
   source_id: string
@@ -9,7 +10,7 @@ export interface TopHeadline {
   year: number
   frequency: number
   ai_headline: string | null
-  id: string | null
+  id: string | null,
 }
 
 export function useTopHeadlines(
@@ -22,6 +23,9 @@ export function useTopHeadlines(
   const { session } = useAuth()
   const user = session?.user.id
 
+  const { region } = useRegion()
+  const german = region == 'DE'
+
   const fetchHeadlines = useCallback(async () => {
     if (week == null || year == null || !user) return
     setLoading(true)
@@ -31,6 +35,7 @@ export function useTopHeadlines(
         .select("source_id, headline, frequency, ai_headline, week, year, id")
         .eq("week", week)
         .eq("year", year)
+        .eq("region", region)
         .order("frequency", { ascending: false })
 
       if (error) throw error
@@ -41,6 +46,7 @@ export function useTopHeadlines(
           .eq("week", week)
           .eq("year", year)
           .eq("user", user)
+          .eq("region", region)
         if (oErr) throw oErr
         const numOverrides = overrides.length
 
@@ -65,7 +71,7 @@ export function useTopHeadlines(
     } finally {
       setLoading(false)
     }
-  }, [week, year])
+  }, [region, week, year])
 
   useEffect(() => {
     fetchHeadlines()
