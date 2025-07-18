@@ -4,11 +4,14 @@ import React from 'react'
 import { AuthProvider } from './hooks/useAuth'
 import App from './App.tsx'
 import './index.css'
+import { RegionProvider } from './hooks/useRegion'
 
 createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-        <AuthProvider>
-            <App />
-        </AuthProvider>
+        <RegionProvider>
+            <AuthProvider>
+                <App />
+            </AuthProvider>
+        </RegionProvider>
     </React.StrictMode>
     );
