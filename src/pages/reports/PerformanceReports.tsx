@@ -179,7 +179,7 @@ export default function PerformanceReports() {
             </SelectContent>
           </Select>
           <Select value={week?.toString() || ''} onValueChange={v => setWeek(Number(v))}>
-            <SelectTrigger className="w-24">
+            <SelectTrigger className="w-32">
               <SelectValue placeholder="Week" />
             </SelectTrigger>
             <SelectContent>
