@@ -46,6 +46,7 @@ const AnstrexData = () => {
       const { data, error } = await supabase
         .from('Anstrex Data')
         .select('week, year')
+        .eq('region', region)
       if (error) throw error
 
       const weekSet = new Set<number>()
