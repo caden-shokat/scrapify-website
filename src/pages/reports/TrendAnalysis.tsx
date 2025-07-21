@@ -161,11 +161,10 @@ const TrendAnalysis = () => {
   useEffect(() => { fetchWeekYearOptions() }, [region])
   useEffect(() => { fetchTrendData() }, [region, year, week])
 
-  const analyzeHeadlineStructures = (data: any[]) => {
+  const analyzeHeadlineStructures = (headlines: string[]) => {
     const structures: Record<string, { count: number; lengths: number[]; examples: string[] }> = {}
-    data.forEach(item => {
-      if (!item.headline) return
-      const headline = item.headline as string
+    headlines.forEach(headline => {
+      if (!headline) return
       const pattern = analyzePattern(headline)
       if (!structures[pattern]) {
         structures[pattern] = { count: 0, lengths: [], examples: [] }
