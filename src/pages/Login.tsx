@@ -69,7 +69,7 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => window.open("https://github.com/caden-shokat/scrapify-website", "_blank")}
+            onClick={() => window.open("https://github.com/cadenshokat/scrapify-website", "_blank")}
           >
             <Github className="h-10 w-10" />
           </Button>
